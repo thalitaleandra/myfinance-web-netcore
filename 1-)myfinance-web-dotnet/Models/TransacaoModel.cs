@@ -1,5 +1,5 @@
 using myfinance_web_dotnet_domain.Entities;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace myfinance_web_netcore.Models
 {
     public class TransacaoModel
@@ -10,6 +10,6 @@ namespace myfinance_web_netcore.Models
     public decimal Valor { get; set; }
     public int PlanoContaId { get; set; }
     public string? Tipo { get; set; }
-    public PlanoConta PlanoConta { get; set; }
+    public IEnumerable<SelectListItem>? ListaPlanoContas { get; set; }
 }
 }

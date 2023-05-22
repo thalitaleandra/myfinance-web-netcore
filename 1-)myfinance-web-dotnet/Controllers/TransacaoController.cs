@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using myfinance_web_dotnet_domain.Entities;
 using myfinance_web_dotnet_service.Interfaces;
@@ -16,13 +17,17 @@ namespace myfinance_web_netcore.Controllers
     {
         private readonly ILogger<TransacaoController> _logger;
         private readonly ITransacaoService _transacaoService;
+        private readonly IPlanoContaService _planoContaService;
 
         public TransacaoController(
             ILogger<TransacaoController> logger,
-            ITransacaoService transacaoService)
+            ITransacaoService transacaoService,
+            IPlanoContaService planoContaService
+            )
         {
             _logger = logger;
            _transacaoService = transacaoService;
+           _planoContaService = planoContaService;
         }
         [HttpGet]
         [Route("Index")]
@@ -49,19 +54,20 @@ namespace myfinance_web_netcore.Controllers
         [Route("Cadastrar/{Id}")]
         public IActionResult Cadastrar(int? Id)
         { 
-            if (Id != null){
-            var transacao = _transacaoService.RetornarRegistro((int)Id);
-            var itemTransacao = new TransacaoModel(){
-                Id = transacao.Id,
-                Historico = transacao.Historico,
-                Date = transacao.Date,
-                Valor = transacao.Valor,
-                PlanoContaId = transacao.PlanoContaId,
-            };
+             var  ListaPlanoContas = new SelectList(_planoContaService.ListarRegistros(), "Id", "Descricao");
+             var itemTransacao = new TransacaoModel(){
+                 Date = DateTime.Now,
+                 ListaPlanoContas = ListaPlanoContas
+             };
+              if (Id != null){
+                var transacao = _transacaoService.RetornarRegistro((int)Id);
+                itemTransacao.Id = transacao.Id;
+                itemTransacao.Historico = transacao.Historico;
+                itemTransacao.Date = transacao.Date;
+                itemTransacao.Valor = transacao.Valor;
+                itemTransacao.PlanoContaId = transacao.PlanoContaId;
+            } 
             return View(itemTransacao);
-            } else{
-                return View();
-            }
         }
         [HttpPost]
         [Route("Cadastrar")]
