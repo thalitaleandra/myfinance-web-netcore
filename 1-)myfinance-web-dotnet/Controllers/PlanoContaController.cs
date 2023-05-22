@@ -48,8 +48,7 @@ namespace myfinance_web_netcore.Controllers
         { 
             if (Id != null){
             var planoConta = _planoContaService.RetornarRegistro((int)Id);
-            var planoContaModel = new PlanoContaModel()
-            {
+            var planoContaModel = new PlanoContaModel() {
                 Id = planoConta.Id,
                 Descricao = planoConta.Descricao,
                 Tipo = planoConta.Tipo
